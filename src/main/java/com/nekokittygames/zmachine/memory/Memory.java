@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import java.util.BitSet;
 
 /**
+ * Represents the memory of the Z-Machine
  * Created by Katrina on 15/02/2015.
  */
 public class Memory {
@@ -15,6 +16,10 @@ public class Memory {
     protected byte[] memory;
 
 
+    /**
+     * Constructs a new memory of the correct size according to the version
+     * @param version Version of the machine
+     */
     public Memory(byte version)
     {
         switch (version)
@@ -40,6 +45,11 @@ public class Memory {
         memory[0]=version;
     }
 
+    /**
+     * Loads memory from a byte array
+     * @param stream byte array to load
+     * @return Constructed memory
+     */
     public static Memory loadMemoryFromStream(byte[] stream)  {
         byte version=stream[0];
         Memory mem=new Memory(version);
@@ -51,12 +61,51 @@ public class Memory {
         return mem;
     }
 
+    /**
+     * Returns File version
+     * @return file version
+     */
     public byte getVersion()
     {
         return memory[0];
     }
 
 
+    public int getPackedAddress(short address)
+    {
+        return getPackedAddress(address,false);
+    }
+
+    /**
+     * Returns the correct packed address for mem version
+     * @param address packed address
+     * @param string Is this a z-string or not?
+     * @return Unpacked address
+     */
+    public int getPackedAddress(short address,boolean string)
+    {
+        switch(getVersion())
+        {
+            case 1:
+            case 2:
+            case 3:
+                return 2*address;
+
+            case 4:
+            case 5:
+                return 4*address;
+            case 6:
+            case 7:
+                if(string)
+                    return 4*address+8*getStringsOffset();
+                else
+                    return 4*address+8*getRoutineOffset();
+            case 8:
+                return 8*address;
+            default:
+                return address;
+        }
+    }
 
     public short getWordb(int pos)
     {
