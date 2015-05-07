@@ -1,5 +1,6 @@
 package com.nekokittygames.zmachine.tests;
 
+import com.google.common.io.Resources;
 import com.nekokittygames.zmachine.blorb.BlorbFile;
 import com.nekokittygames.zmachine.blorb.IFF.Chunks.RIdxChunk;
 import com.nekokittygames.zmachine.blorb.IFF.Chunks.ZCodChunk;
@@ -21,7 +22,7 @@ public class HeaderTests {
     public static void before()
     {
         try {
-            BlorbFile file = new BlorbFile(HeaderTests.class.getResource("/src/test/resources/The Pelican.zblorb").getFile());
+            BlorbFile file = new BlorbFile(Resources.getResource("test.zblorb").getFile());
 
             file.parseFile();
             RIdxChunk.Resource res = file.getResourceChunk().getResource("Exec", 0);
