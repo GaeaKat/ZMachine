@@ -78,8 +78,8 @@ public class Memory {
     public static boolean isBitSet(byte byt,int num)
     {
         BitSet set=BitSet.valueOf(new byte[]{byt});
-
-        return set.get(num);
+        return false;
+        //return set.get(num);
     }
 
     public static byte setBit(byte byt,int num,boolean bit)
