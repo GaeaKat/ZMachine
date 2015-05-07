@@ -8,6 +8,7 @@ import com.nekokittygames.zmachine.blorb.IFF.Chunks.RIdxChunk;
 import java.io.*;
 
 /**
+ * A generic zblorb file
  * Created by Katrina on 08/02/2015.
  */
 public class BlorbFile {

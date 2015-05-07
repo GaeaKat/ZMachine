@@ -67,12 +67,20 @@ public abstract class Chunk {
         this.stream=new DataInputStream(inStream);
     }
 
+    /**
+     * Adds a chunk class to the parser
+     * @param chunk
+     * @param chunkClass
+     */
     public static void AddChunkClass(String chunk,Class<? extends Chunk> chunkClass)
     {
-        if(!chunkClasses.containsKey("chunk"))
+        if(!chunkClasses.containsKey(chunk))
             chunkClasses.put(chunk,chunkClass);
     }
 
+    /**
+     * Adds the known chunk classs
+     */
     static
     {
         AddChunkClass("FORM", FormChunk.class);
@@ -91,6 +99,13 @@ public abstract class Chunk {
         AddChunkClass("Plte",PlteChunk.class);
 
     }
+
+    /**
+     * gets a chunk from the stream
+     * @param inStream Stream to read from
+     * @return Fully formed chunk
+     * @throws IOException If there is a problem reading from the file
+     */
     public static Chunk getChunk(CountingInputStream inStream) throws IOException {
         DataInputStream stream=new DataInputStream(inStream);
         byte[] chars=new byte[4];
