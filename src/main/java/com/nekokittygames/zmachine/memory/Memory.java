@@ -75,14 +75,14 @@ public class Memory {
         memory[pos+1]=num[1];
     }
 
-    public boolean isBitSet(byte byt,int num)
+    public static boolean isBitSet(byte byt,int num)
     {
         BitSet set=BitSet.valueOf(new byte[]{byt});
 
         return set.get(num);
     }
 
-    public byte setBit(byte byt,int num,boolean bit)
+    public static byte setBit(byte byt,int num,boolean bit)
     {
         BitSet set=BitSet.valueOf(new byte[]{byt});
         set.set(num,bit);
