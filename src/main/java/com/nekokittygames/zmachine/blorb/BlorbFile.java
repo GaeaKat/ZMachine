@@ -18,6 +18,10 @@ public class BlorbFile {
     {
         this.file=new File(fileName);
     }
+    public BlorbFile(File file)
+    {
+        this.file=file;
+    }
 
 
     public void parseFile() throws IOException, InstantiationException, IllegalAccessException {

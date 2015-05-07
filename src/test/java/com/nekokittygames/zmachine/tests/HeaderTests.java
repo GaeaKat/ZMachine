@@ -20,17 +20,18 @@ public class HeaderTests {
     @BeforeClass
     public static void before()
     {
-        //try {
-        //    BlorbFile file = new BlorbFile("C:\\Users\\Katrina\\Downloads\\The Pelican.zblorb");
-        //    file.parseFile();
-        //    RIdxChunk.Resource res = file.getResourceChunk().getResource("Exec", 0);
-        //    ZCodChunk chunk = (ZCodChunk) file.getResourceAt(res.Start);
-        //    mem = Memory.loadMemoryFromStream(chunk.image);
-        //}
-        //catch(Exception e)
-        //{
-///
- //       }
+        try {
+            BlorbFile file = new BlorbFile(HeaderTests.class.getResource("/src/test/resources/The Pelican.zblorb").getFile());
+
+            file.parseFile();
+            RIdxChunk.Resource res = file.getResourceChunk().getResource("Exec", 0);
+            ZCodChunk chunk = (ZCodChunk) file.getResourceAt(res.Start);
+            mem = Memory.loadMemoryFromStream(chunk.image);
+        }
+        catch(Exception e)
+        {
+            assertFalse("Could not open Test File",true);
+        }
     }
     @Test
     public void MemoryIsBitSet()
