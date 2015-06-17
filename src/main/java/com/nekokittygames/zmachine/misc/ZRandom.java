@@ -37,7 +37,7 @@ public class ZRandom {
 
     /**
      * Sets the gen into predictable mode
-     * @param seed seed to use, if <1000 it uses sequence mode
+     * @param seed seed to use, if less than 1000 it uses sequence mode
      */
     public void setPredictable(long seed)
     {
