@@ -6,6 +6,7 @@ import com.nekokittygames.zmachine.blorb.IFF.Chunks.JPEGChunk;
 import com.nekokittygames.zmachine.blorb.IFF.Chunks.RIdxChunk;
 import com.nekokittygames.zmachine.blorb.IFF.Chunks.ZCodChunk;
 import com.nekokittygames.zmachine.memory.Memory;
+import com.nekokittygames.zmachine.misc.ZRandom;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -17,7 +18,7 @@ import java.io.IOException;
 public class TestRun {
 
     public static void main (String[] arg) throws IOException, IllegalAccessException, InstantiationException {
-        BlorbFile file=new BlorbFile("C:\\Users\\Katrina\\Downloads\\The Pelican.zblorb");
+        /*BlorbFile file=new BlorbFile("C:\\Users\\Katrina\\Downloads\\The Pelican.zblorb");
         file.parseFile();
         RIdxChunk.Resource res=file.getResourceChunk().getResource("Exec",0);
         ZCodChunk chunk=(ZCodChunk)file.getResourceAt(res.Start);
@@ -61,6 +62,7 @@ public class TestRun {
         System.out.println(mem.getUseMouse());
         System.out.println(mem.getUseColours());
         System.out.println(mem.getUseSound());
-        System.out.println(mem.getUseMenu());
+        System.out.println(mem.getUseMenu());*/
+
     }
 }
