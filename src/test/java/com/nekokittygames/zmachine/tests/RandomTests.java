@@ -33,20 +33,29 @@ public class RandomTests {
     {
         ZRandom rand=new ZRandom();
         rand.setPredictable(1337);
-        assertEquals(rand.getInt(10),2);
-        assertEquals(rand.getInt(10), 5);
-        assertEquals(rand.getInt(10), 10);
-        assertEquals(rand.getInt(100),23);
-        assertEquals(rand.getInt(1337), 1014);
-        assertEquals(rand.getInt(90), 89);
+        assertEquals(2, rand.getInt(10));
+        assertEquals(5, rand.getInt(10));
+        assertEquals(10, rand.getInt(10));
+        assertEquals(23, rand.getInt(100));
+        assertEquals(1014, rand.getInt(1337));
+        assertEquals(89, rand.getInt(90));
 
         rand=new ZRandom();
         rand.setPredictable(1338);
-        assertNotEquals(rand.getInt(10), 2);
-        assertNotEquals(rand.getInt(10), 5);
-        assertNotEquals(rand.getInt(10), 10);
-        assertNotEquals(rand.getInt(100), 23);
-        assertNotEquals(rand.getInt(1337), 1014);
-        assertNotEquals(rand.getInt(90), 89);
+        assertNotEquals(2,rand.getInt(10));
+        assertNotEquals(5,rand.getInt(10));
+        assertNotEquals(10,rand.getInt(10));
+        assertNotEquals(23,rand.getInt(100));
+        assertNotEquals(1014,rand.getInt(1337));
+        assertNotEquals(89,rand.getInt(90));
+
+        rand=new ZRandom();
+        rand.setPredictable(10);
+        assertEquals(1, rand.getInt(5));
+        assertEquals(2, rand.getInt(5));
+        assertEquals(3, rand.getInt(5));
+        assertEquals(4, rand.getInt(5));
+        assertEquals(5, rand.getInt(5));
+        assertEquals(1, rand.getInt(5));
     }
 }
