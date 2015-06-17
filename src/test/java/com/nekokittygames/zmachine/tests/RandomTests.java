@@ -49,7 +49,13 @@ public class RandomTests {
         assertNotEquals(1014,rand.getInt(1337));
         assertNotEquals(89,rand.getInt(90));
 
-        rand=new ZRandom();
+    }
+
+
+    @Test
+    public void testPredictableSequential()
+    {
+        ZRandom rand=new ZRandom();
         rand.setPredictable(10);
         assertEquals(1, rand.getInt(5));
         assertEquals(2, rand.getInt(5));
@@ -57,5 +63,6 @@ public class RandomTests {
         assertEquals(4, rand.getInt(5));
         assertEquals(5, rand.getInt(5));
         assertEquals(1, rand.getInt(5));
+
     }
 }
