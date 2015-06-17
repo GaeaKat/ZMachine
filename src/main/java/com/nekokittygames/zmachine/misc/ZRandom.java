@@ -3,6 +3,7 @@ package com.nekokittygames.zmachine.misc;
 import java.util.Random;
 
 /**
+ * Z-Machine Random Generator
  * Created by Katrina on 17/06/2015.
  */
 public class ZRandom {
@@ -13,6 +14,10 @@ public class ZRandom {
     private long seed;
     private int place;
     public int[] sequence=new int[1000];
+
+    /**
+     * Default Constructor
+     */
     public ZRandom()
     {
         rand=new Random();
@@ -21,12 +26,19 @@ public class ZRandom {
     }
 
 
-
+    /**
+     * Returns mode the gen is in
+     * @return if the gen is in predictable mode
+     */
     public boolean isPredictable()
     {
         return predictable;
     }
 
+    /**
+     * Sets the gen into predictable mode
+     * @param seed seed to use, if <1000 it uses sequence mode
+     */
     public void setPredictable(long seed)
     {
         predictable=true;
@@ -41,6 +53,9 @@ public class ZRandom {
 
     }
 
+    /**
+     * Sets the gen into random mode again
+     */
     public void setRandom()
     {
         predictable=false;
@@ -49,7 +64,11 @@ public class ZRandom {
         sequence=new int[1000];
     }
 
-    // 1 2 3 4 5 6 7 8 9 10
+    /**
+     * Gets next int in range
+     * @param range range of results
+     * @return random or predictable number
+     */
     public int getInt(int range)
     {
 
