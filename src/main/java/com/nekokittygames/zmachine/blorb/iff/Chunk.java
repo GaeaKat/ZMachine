@@ -11,8 +11,6 @@ import java.util.HashMap;
 
 /**
  * Single chunk in an IFF file, may contain more chunks
- * <p/>
- * <p/>
  * Created by Katrina Swales on 09/02/2015.
  */
 public abstract class Chunk {

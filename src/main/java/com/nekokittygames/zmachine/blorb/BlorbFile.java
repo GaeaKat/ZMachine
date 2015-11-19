@@ -40,8 +40,6 @@ public class BlorbFile {
      * parses the file into it's chunks
      *
      * @throws IOException            If there is an error reading the file
-     * @throws InstantiationException If there is an unknown chunk found
-     * @throws IllegalAccessException If something weird is going on
      */
     public void parseFile() throws IOException {
         CountingInputStream stream = new CountingInputStream(new FileInputStream(file));
