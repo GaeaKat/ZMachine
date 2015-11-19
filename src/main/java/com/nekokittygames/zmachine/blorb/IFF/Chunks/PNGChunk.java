@@ -1,14 +1,12 @@
-package com.nekokittygames.zmachine.blorb.IFF.Chunks;
+package com.nekokittygames.zmachine.blorb.iff.chunks;
 
 import com.google.common.io.CountingInputStream;
-import com.nekokittygames.zmachine.blorb.IFF.Chunk;
+import com.nekokittygames.zmachine.blorb.iff.Chunk;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.EOFException;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by Katrina on 09/02/2015.
@@ -16,15 +14,15 @@ import java.util.ArrayList;
 public class PNGChunk extends Chunk {
 
 
-    protected byte[] image;
     public BufferedImage bufferedImage;
+    protected byte[] image;
 
     @Override
     public void Parse(CountingInputStream inStream) throws IOException {
         super.Parse(inStream);
-        image=new byte[getSize()];
+        image = new byte[getSize()];
         stream.readFully(image);
-        bufferedImage=ImageIO.read(new ByteArrayInputStream(image));
+        bufferedImage = ImageIO.read(new ByteArrayInputStream(image));
 
     }
 }

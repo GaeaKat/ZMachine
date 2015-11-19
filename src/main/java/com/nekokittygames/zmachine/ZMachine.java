@@ -8,8 +8,7 @@ import com.nekokittygames.zmachine.memory.Memory;
 public class ZMachine {
     Memory memory;
 
-    public void InitZMachine(boolean restart)
-    {
+    public void InitZMachine(boolean restart) {
         memory.setStatusLineAvailable(true);
         memory.setScreenSplitting(false);
         memory.setVariablePitch(false);
@@ -24,9 +23,9 @@ public class ZMachine {
         memory.setUseMouse(false);
         memory.setUseSound(false);
         memory.setUseMenu(false);
-        memory.setInterpreterNumber((byte)2);
-        memory.setInterpreterVersion((byte)1);
-        memory.setScreenHeightLines((byte)19);
-        memory.setScreenWidthChars((byte)49);
+        memory.setInterpreterNumber((byte) 2);
+        memory.setInterpreterVersion((byte) 1);
+        memory.setScreenHeightLines((byte) 19);
+        memory.setScreenWidthChars((byte) 49);
     }
 }

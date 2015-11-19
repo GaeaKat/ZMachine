@@ -1,7 +1,7 @@
-package com.nekokittygames.zmachine.blorb.IFF.Chunks;
+package com.nekokittygames.zmachine.blorb.iff.chunks;
 
 import com.google.common.io.CountingInputStream;
-import com.nekokittygames.zmachine.blorb.IFF.Chunk;
+import com.nekokittygames.zmachine.blorb.iff.Chunk;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ public class TextChunk extends Chunk {
     @Override
     public void Parse(CountingInputStream inStream) throws IOException {
         super.Parse(inStream);
-        text=new byte[getSize()];
+        text = new byte[getSize()];
         stream.readFully(text);
 
     }

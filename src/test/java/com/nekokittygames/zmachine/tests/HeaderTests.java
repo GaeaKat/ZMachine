@@ -2,8 +2,8 @@ package com.nekokittygames.zmachine.tests;
 
 import com.google.common.io.Resources;
 import com.nekokittygames.zmachine.blorb.BlorbFile;
-import com.nekokittygames.zmachine.blorb.IFF.Chunks.RIdxChunk;
-import com.nekokittygames.zmachine.blorb.IFF.Chunks.ZCodChunk;
+import com.nekokittygames.zmachine.blorb.iff.chunks.RIdxChunk;
+import com.nekokittygames.zmachine.blorb.iff.chunks.ZCodChunk;
 import com.nekokittygames.zmachine.memory.Memory;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class HeaderTests {
 
-    public static Memory mem;
+    private static Memory mem;
 
     @BeforeClass
     public static void before()
@@ -37,11 +37,11 @@ public class HeaderTests {
     @Test
     public void MemoryIsBitSet()
     {
-        assertFalse("Wrong Bit should be false",mem.isBitSet((byte)  0x1,1));
-        assertEquals("Right Bit should not be false", true, mem.isBitSet((byte) 0x1, 0));
+        assertFalse("Wrong Bit should be false", Memory.isBitSet((byte)  0x1,1));
+        assertEquals("Right Bit should not be false", true, Memory.isBitSet((byte) 0x1, 0));
 
-        assertEquals("Right Bit 4should not be false",true,mem.isBitSet((byte)  0x8,3));
-        assertEquals("Right Bit  !4 should not be false",false,mem.isBitSet((byte)  0x8,2));
+        assertEquals("Right Bit 4should not be false",true, Memory.isBitSet((byte)  0x8,3));
+        assertEquals("Right Bit  !4 should not be false",false, Memory.isBitSet((byte)  0x8,2));
 
     }
 
