@@ -36,5 +36,25 @@ public class NumberTests {
         ZNumber num1=new ZNumber(4);
         assertEquals("Must be empty",num1.toBytes()[0],0b00000000);
         assertEquals("Must be 0b00000100",num1.toBytes()[1],0b00000100);
+
+
+        ZNumber num2=new ZNumber(-26);
+        assertEquals("Must be full",(byte)num2.toBytes()[0],(byte)0b11111111);
+        assertEquals("Must be 0b11100110",(byte)num2.toBytes()[1],(byte)0b11100110);
+    }
+
+
+    @Test
+    public void addNumber()
+    {
+        ZNumber num1=new ZNumber(20);
+        ZNumber res=new ZNumber(num1.toSignedShort()+1);
+        assertEquals("Must be 21",res.toSignedShort(),21);
+    }
+
+    @Test
+    public void DivisionCheck()
+    {
+        assertEquals("Must be -5",-5,new ZNumber(-11/2).toSignedShort());
     }
 }
