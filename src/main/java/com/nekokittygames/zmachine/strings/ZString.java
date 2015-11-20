@@ -1,4 +1,4 @@
-package com.nekokittygames.zmachine.misc;
+package com.nekokittygames.zmachine.strings;
 
 /**
  * Created by nekosune on 19/11/15.

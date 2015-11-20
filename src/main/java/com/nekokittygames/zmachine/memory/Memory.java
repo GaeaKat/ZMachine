@@ -64,6 +64,8 @@ public class Memory {
     public static byte setBit(byte byt, int num, boolean bit) {
         BitSet set = BitSet.valueOf(new byte[]{byt});
         set.set(num, bit);
+        if(set.isEmpty())
+            return 0;
         return set.toByteArray()[0];
     }
 

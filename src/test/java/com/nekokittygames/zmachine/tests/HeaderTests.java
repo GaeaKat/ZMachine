@@ -1,6 +1,7 @@
 package com.nekokittygames.zmachine.tests;
 
 import com.google.common.io.Resources;
+import com.nekokittygames.zmachine.ZMachine;
 import com.nekokittygames.zmachine.blorb.BlorbFile;
 import com.nekokittygames.zmachine.blorb.iff.chunks.RIdxChunk;
 import com.nekokittygames.zmachine.blorb.iff.chunks.ZCodChunk;
@@ -17,31 +18,28 @@ import static org.junit.Assert.assertFalse;
 public class HeaderTests {
 
     private static Memory mem;
+    private static ZMachine zMachine;
 
     @BeforeClass
     public static void before()
     {
         try {
-            BlorbFile file = new BlorbFile(Resources.getResource("test.zblorb").getFile());
-
-            file.parseFile();
-            RIdxChunk.Resource res = file.getResourceChunk().getResource("Exec", 0);
-            ZCodChunk chunk = (ZCodChunk) file.getResourceAt(res.Start);
-            mem = Memory.loadMemoryFromStream(chunk.image);
+            zMachine=new ZMachine();
+            zMachine.InitFromFile(Resources.getResource("test.zblorb").getFile());
         }
         catch(Exception e)
         {
-            assertFalse("Could not open Test File",true);
+            assertFalse("Could not open Test File with error"+e.getMessage(),true);
         }
     }
     @Test
     public void MemoryIsBitSet()
     {
-        assertFalse("Wrong Bit should be false", Memory.isBitSet((byte)  0x1,1));
-        assertEquals("Right Bit should not be false", true, Memory.isBitSet((byte) 0x1, 0));
+        assertFalse("Wrong Bit should be false", zMachine.getMemory().isBitSet((byte)  0x1,1));
+        assertEquals("Right Bit should not be false", true, zMachine.getMemory().isBitSet((byte) 0x1, 0));
 
-        assertEquals("Right Bit 4should not be false",true, Memory.isBitSet((byte)  0x8,3));
-        assertEquals("Right Bit  !4 should not be false",false, Memory.isBitSet((byte)  0x8,2));
+        assertEquals("Right Bit 4should not be false",true, zMachine.getMemory().isBitSet((byte)  0x8,3));
+        assertEquals("Right Bit  !4 should not be false",false, zMachine.getMemory().isBitSet((byte)  0x8,2));
 
     }
 
