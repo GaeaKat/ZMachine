@@ -3,7 +3,7 @@ package com.nekokittygames.zmachine.strings;
 /**
  * Created by nekosune on 19/11/15.
  */
-public class ZTranslate {
+public class ZTranslate implements Cloneable{
     private ZAlphabet.Alphabet currentAlphabet;
     private ZAlphabet.Alphabet lockAlphabet;
     private boolean shiftLock;
@@ -168,5 +168,13 @@ public class ZTranslate {
 
 
         return result;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        ZTranslate clone=null;
+        clone= (ZTranslate) super.clone();
+        clone.reset();
+        return clone;
     }
 }

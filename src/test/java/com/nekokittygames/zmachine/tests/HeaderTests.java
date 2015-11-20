@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class HeaderTests {
 
-    private static Memory mem;
+
     private static ZMachine zMachine;
 
     @BeforeClass

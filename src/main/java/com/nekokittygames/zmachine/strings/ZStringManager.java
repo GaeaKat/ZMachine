@@ -21,4 +21,17 @@ public class ZStringManager {
 
 
 
+    public static String Decode(int address)
+    {
+        return Decode(address,0);
+    }
+
+    public static String Decode(int address,int length)
+    {
+        ZDecode decode=new ZDecode(new ZTranslate());
+        return decode.decode2Zscii(mem,address,length);
+    }
+
+
+
 }
