@@ -155,9 +155,9 @@ public class ZAlphabet {
     /**
      * Is Shift1
      * @param zChar     character to check
-     * @return <c>true</c> if character is shift1 <c>false</c> if not
+     * @return true if character is shift1 false if not
      */
-    public boolean isShift1(final char zChar)
+    public static boolean isShift1(final char zChar)
     {
         if(mem.getVersion()==2)
             return zChar==SHIFT_2 || zChar==SHIFT_4;
@@ -167,9 +167,9 @@ public class ZAlphabet {
     /**
      * Is Shift2
      * @param zChar     character to check
-     * @return <c>true</c> if character is shift2 <c>false</c> if not
+     * @return true if character is shift2 false if not
      */
-    public boolean isShift2(final char zChar)
+    public static boolean isShift2(final char zChar)
     {
         if(mem.getVersion()==2)
             return zChar==SHIFT_3 || zChar==SHIFT_5;
@@ -180,9 +180,9 @@ public class ZAlphabet {
     /**
      * Is Shift
      * @param zChar     character to check
-     * @return <c>true</c> if character is shift <c>false</c> if not
+     * @return true if character is shift false if not
      */
-    public boolean isShift(final char zChar)
+    public static boolean isShift(final char zChar)
     {
         return isShift1(zChar) || isShift2(zChar);
     }
@@ -190,9 +190,9 @@ public class ZAlphabet {
     /**
      * Is Shift lock?
      * @param zChar     character to check
-     * @return <c>true</c> if character is a shift lock <c>false</c> if not
+     * @return true if character is a shift lock false if not
      */
-    public boolean isShiftLock(final char zChar)
+    public static boolean isShiftLock(final char zChar)
     {
         if(mem.getVersion()==2)
             return zChar==SHIFT_4||zChar==SHIFT_5;
@@ -202,9 +202,9 @@ public class ZAlphabet {
     /**
      * Is an abbreviation?
      * @param zChar     character to check
-     * @return <c>true</c> if character is an abbreviation <c>false</c> if not
+     * @return true if character is an abbreviation false if not
      */
-    public boolean isAbbreviation(final char zChar)
+    public static boolean isAbbreviation(final char zChar)
     {
         if(mem.getVersion()==2)
             return zChar==1;

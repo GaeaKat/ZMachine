@@ -107,7 +107,7 @@ public class ZSCII {
     /**
      * Is the character a valid ZSCII character
      * @param zchar Chaarcter to check
-     * @return <c>true</c> if valid <c>false</c> if not
+     * @return true if valid false if not
      */
     public boolean isZsciiCharacter(final char zchar) {
         switch (zchar) {
@@ -125,7 +125,7 @@ public class ZSCII {
     /**
      * Is the character ascii?
      * @param zchar Character to check
-     * @return <c>true</c> if ascii <c>false</c> if not
+     * @return true if ascii false if not
      */
     public static boolean isAscii(final char zchar) {
         return zchar >= ASCII_START && zchar <= ASCII_END;
@@ -135,7 +135,7 @@ public class ZSCII {
     /**
      * Is the character accent
      * @param zchar character to check
-     * @return <c>true</c> if accent <c>false</c> if not
+     * @return true if accent false if not
      */
     public static boolean isAccent(final char zchar) {
         return zchar >= ACCENT_START && zchar <= ACCENT_END;
@@ -144,7 +144,7 @@ public class ZSCII {
     /**
      * Is the character a cursor key
      * @param zsciiChar character to check
-     * @return <c>true</c> if cursor <c>false</c> if not
+     * @return true if cursor false if not
      */
     public static boolean isCursorKey(final char zsciiChar) {
         return zsciiChar >= CURSOR_UP && zsciiChar <= CURSOR_RIGHT;
@@ -153,7 +153,7 @@ public class ZSCII {
     /**
      * Is the character a function key
      * @param zsciiChar character to check
-     * @return <c>true</c> if function <c>false</c> if not
+     * @return true if function false if not
      */
     public static boolean isFunctionKey(final char zsciiChar) {
         return (zsciiChar >= 129 && zsciiChar <= 154)
@@ -163,7 +163,7 @@ public class ZSCII {
     /**
      * Is character unicode
      * @param zchar character to check
-     * @return <c>true</c> if valid <c>false</c> if not
+     * @return true if valid false if not
      */
     private static boolean isUnicodeCharacter(final char zchar) {
         return zchar >= 256;
@@ -172,7 +172,7 @@ public class ZSCII {
     /**
      * Is characrer convertible to ZSCII
      * @param c character to check
-     * @return <c>true</c> if valid <c>false</c> if not
+     * @return true if valid false if not
      */
     public boolean isConvertableToZscii(final char c) {
         return isAscii(c) || isInTranslationTable(c) || c == '\n'
