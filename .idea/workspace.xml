@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95a7ac14-62ef-4e3e-8319-e4c79597e6e8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/Galatea.zblorb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/memory/ZCallStack.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/memory/ZFrame.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/com/nekokittygames/zmachine/tests/StringTests.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZDecode.java" afterPath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZDecode.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZStringManager.java" afterPath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZStringManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZTranslate.java" afterPath="$PROJECT_DIR$/src/main/java/com/nekokittygames/zmachine/strings/ZTranslate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/com/nekokittygames/zmachine/tests/HeaderTests.java" afterPath="$PROJECT_DIR$/src/test/java/com/nekokittygames/zmachine/tests/HeaderTests.java" />
     </list>
     <ignored path="ZMachine.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -1527,7 +1519,7 @@
       <workItem from="1447963811839" duration="3077000" />
       <workItem from="1447967535114" duration="6801000" />
       <workItem from="1447977103684" duration="2753000" />
-      <workItem from="1448021251456" duration="9571000" />
+      <workItem from="1448021251456" duration="10783000" />
     </task>
     <task id="LOCAL-00001" summary="Finished ZNumber for now">
       <created>1447961413010</created>
@@ -1547,7 +1539,13 @@
       <option name="project" value="LOCAL" />
       <updated>1448024243886</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Completed ZStrings">
+      <created>1448030845732</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1448030845732</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1583,7 +1581,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="125547000" />
+    <option name="totallyTimeSpent" value="126759000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1456" height="876" extended-state="6" />
@@ -1635,7 +1633,8 @@
     <MESSAGE value="Finished ZNumber for now" />
     <MESSAGE value="finished docs&#10;" />
     <MESSAGE value="Stopped Docs invalid tag" />
-    <option name="LAST_COMMIT_MESSAGE" value="Stopped Docs invalid tag" />
+    <MESSAGE value="Completed ZStrings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Completed ZStrings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
