@@ -74,6 +74,7 @@ public class CallStackTests {
     }
 
 
+    @Test
     public void PushSamePointer()
     {
         ZFrame frame=new ZFrame();
