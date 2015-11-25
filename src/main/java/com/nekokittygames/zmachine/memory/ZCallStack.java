@@ -1,12 +1,15 @@
 package com.nekokittygames.zmachine.memory;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
 /**
  * Created by katsw on 20/11/2015.
  */
-public class ZCallStack {
+public class ZCallStack implements Serializable {
 
     private final ZCallStackElement first;
     private ZCallStackElement last;
@@ -24,7 +27,7 @@ public class ZCallStack {
         this(frame, (short) -1);
     }
 
-    public class ZCallStackElement
+    public class ZCallStackElement implements Serializable
     {
         private final short framePointer;
         private final ZFrame frame;
@@ -90,5 +93,9 @@ public class ZCallStack {
     public int getSize()
     {
         return size;
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
     }
 }

@@ -1,6 +1,11 @@
 package com.nekokittygames.zmachine;
 
-import java.io.IOException;
+import com.google.common.io.Resources;
+import com.nekokittygames.zmachine.memory.ZCallStack;
+import com.nekokittygames.zmachine.memory.ZFrame;
+
+import javax.sound.midi.SysexMessage;
+import java.io.*;
 
 /**
  * Created by Katrina on 09/02/2015.
@@ -31,7 +36,7 @@ public class TestRun {
         System.out.println(mem.getDictionary());
         System.out.println(mem.getObjects());
         System.out.println(mem.getGlobalVariables());
-        System.out.println(mem.getStaticMemory());
+        System.out.println(mem.getStaticMemoryLoc());
         System.out.println(mem.getSerialCode());
         System.out.println(mem.getAbbrieviationsTable());
         System.out.println(mem.getFileSize()*4);
@@ -54,5 +59,56 @@ public class TestRun {
         System.out.println(mem.getUseSound());
         System.out.println(mem.getUseMenu());*/
 
+//        ZFrame frame=new ZFrame();
+//        ZCallStack stack=new ZCallStack(frame);
+//        ZFrame one=new ZFrame();
+//        one.setPC(5);
+//        stack.push(one, (short) 123);
+//        ZFrame two=new ZFrame();
+//        two.setPC(10);
+//        two.getRoutineStack().push((short) 30);
+//        stack.push(two, (short) 124);
+//        ZFrame three=new ZFrame();
+//        three.setPC(20);
+//        stack.push(three, (short) 125);
+//        try
+//        {
+//            FileOutputStream fos=new FileOutputStream("/tmp/zmachine.ser");
+//            ObjectOutputStream oos=new ObjectOutputStream(fos);
+//            oos.writeObject(stack);
+//            oos.close();
+//        }
+//        catch(Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        ZCallStack stack=null;
+//        try
+//        {
+//            FileInputStream fis=new FileInputStream("/tmp/zmachine.ser");
+//            ObjectInputStream ois=new ObjectInputStream(fis);
+//            stack= (ZCallStack) ois.readObject();
+//            ois.close();
+//
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(stack.getSize());
+
+        ZMachine machine=new ZMachine();
+        machine.InitFromFile(Resources.getResource("Galatea.zblorb").getFile());
+        System.out.println(machine.getCallStack().peek().getFrame().getPC());
+        System.out.println(machine.getCallStack().peek().getFrame().getNumValues());
+        System.out.println(machine.getMemory().getWordb((int) machine.getCallStack().peek().getFrame().getPC()));
+        ZFrame one=new ZFrame();
+        one.setPC(5);
+        machine.getCallStack().push(one, (short) 123);
+        ZFrame two=new ZFrame();
+        two.setPC(10);
+        two.getRoutineStack().push((short) 30);
+        machine.getCallStack().push(two, (short) 124);
+        ZFrame three=new ZFrame();
+        three.setPC(20);
+        machine.getCallStack().push(three, (short) 125);
     }
 }

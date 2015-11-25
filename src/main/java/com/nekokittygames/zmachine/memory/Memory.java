@@ -1,5 +1,6 @@
 package com.nekokittygames.zmachine.memory;
 
+import com.nekokittygames.zmachine.misc.ZNumber;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.nio.ByteBuffer;
@@ -78,7 +79,7 @@ public class Memory {
         return memory[0];
     }
 
-    public int getPackedAddress(short address) {
+    public int getPackedAddress(int address) {
         return getPackedAddress(address, false);
     }
 
@@ -89,7 +90,7 @@ public class Memory {
      * @param string  Is this a z-string or not?
      * @return Unpacked address
      */
-    public int getPackedAddress(short address, boolean string) {
+    public int getPackedAddress(int address, boolean string) {
         switch (getVersion()) {
             case 1:
             case 2:
@@ -112,11 +113,27 @@ public class Memory {
         }
     }
 
+    public short getByte(int pos)
+    {
+        byte[] num = ArrayUtils.subarray(memory, pos, pos + 1);
+        ByteBuffer wrapped = ByteBuffer.wrap(num);
+
+        return wrapped.get();
+
+    }
     public short getWordb(int pos) {
         byte[] num = ArrayUtils.subarray(memory, pos, pos + 2);
         ByteBuffer wrapped = ByteBuffer.wrap(num);
 
         return wrapped.getShort();
+    }
+
+    public int getWordu(int pos)
+    {
+        byte[] byt=new byte[2];
+        System.arraycopy(memory,pos,byt,0,2);
+        ZNumber num=new ZNumber(byt);
+        return num.toUnsignedShort();
     }
 
     public void setWordb(int pos, short value) {
@@ -229,11 +246,11 @@ public class Memory {
     }
 
     public short getInitialPC() {
-        return getWordb(6);
+        return (short) getWordu(6);
     }
 
-    public short getInitialPacked() {
-        return getWordb(6);
+    public int getInitialPacked() {
+        return getWordu(0x6);
     }
 
     public short getDictionary() {
@@ -248,7 +265,7 @@ public class Memory {
         return getWordb(0xC);
     }
 
-    public short getStaticMemory() {
+    public short getStaticMemoryLoc() {
         return getWordb(0xE);
     }
 
@@ -476,5 +493,17 @@ public class Memory {
 
     public char getUnicodeTranslationTable() {
         return (char) getWordb(getHeaderExtension() + 6);
+    }
+
+
+    public byte[] getDynamicMem()
+    {
+        byte[] dyn=new byte[getStaticMemoryLoc()];
+        System.arraycopy(memory,0,dyn,0,getStaticMemoryLoc());;
+        return dyn;
+    }
+    public void setDynamicMem(byte[] bytes)
+    {
+        System.arraycopy(bytes,0,memory,0,bytes.length);
     }
 }
