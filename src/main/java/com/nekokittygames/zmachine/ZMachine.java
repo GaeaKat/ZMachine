@@ -55,8 +55,9 @@ public class ZMachine {
         memory.setScreenHeightLines((byte) 19);
         memory.setScreenWidthChars((byte) 49);
         callStack=new ZCallStack(new ZFrame());
-        if(memory.getVersion()<=5) {
-            callStack.peek().getFrame().setPC(memory.getInitialPC()*2);
+        if(memory.getVersion()!=6) {
+            callStack.peek().getFrame().setPC(memory.getInitialPC());
+
         }
         else
         {

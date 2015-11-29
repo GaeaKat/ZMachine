@@ -1,6 +1,7 @@
 package com.nekokittygames.zmachine;
 
 import com.google.common.io.Resources;
+import com.google.common.primitives.UnsignedBytes;
 import com.nekokittygames.zmachine.memory.ZCallStack;
 import com.nekokittygames.zmachine.memory.ZFrame;
 
@@ -63,14 +64,14 @@ public class TestRun {
 //        ZCallStack stack=new ZCallStack(frame);
 //        ZFrame one=new ZFrame();
 //        one.setPC(5);
-//        stack.push(one, (short) 123);
+//        stack.push(one,  123);
 //        ZFrame two=new ZFrame();
 //        two.setPC(10);
-//        two.getRoutineStack().push((short) 30);
-//        stack.push(two, (short) 124);
+//        two.getRoutineStack().push( 30);
+//        stack.push(two,  124);
 //        ZFrame three=new ZFrame();
 //        three.setPC(20);
-//        stack.push(three, (short) 125);
+//        stack.push(three,  125);
 //        try
 //        {
 //            FileOutputStream fos=new FileOutputStream("/tmp/zmachine.ser");
@@ -98,17 +99,16 @@ public class TestRun {
         ZMachine machine=new ZMachine();
         machine.InitFromFile(Resources.getResource("Galatea.zblorb").getFile());
         System.out.println(machine.getCallStack().peek().getFrame().getPC());
-        System.out.println(machine.getCallStack().peek().getFrame().getNumValues());
-        System.out.println(machine.getMemory().getWordb((int) machine.getCallStack().peek().getFrame().getPC()));
-        ZFrame one=new ZFrame();
-        one.setPC(5);
-        machine.getCallStack().push(one, (short) 123);
-        ZFrame two=new ZFrame();
-        two.setPC(10);
-        two.getRoutineStack().push((short) 30);
-        machine.getCallStack().push(two, (short) 124);
-        ZFrame three=new ZFrame();
-        three.setPC(20);
-        machine.getCallStack().push(three, (short) 125);
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()))));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+1))));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+4)) ));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+5))));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+6)) ));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+7))));
+        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+8))));
+        System.out.println(machine.getMemory().getWordu((int) (machine.getCallStack().peek().getFrame().getPC()+9)));
+
+
+
     }
 }

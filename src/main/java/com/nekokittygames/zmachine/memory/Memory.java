@@ -113,12 +113,12 @@ public class Memory {
         }
     }
 
-    public short getByte(int pos)
+    public byte getByte(int pos)
     {
         byte[] num = ArrayUtils.subarray(memory, pos, pos + 1);
         ByteBuffer wrapped = ByteBuffer.wrap(num);
 
-        return wrapped.get();
+        return  wrapped.get();
 
     }
     public short getWordb(int pos) {
