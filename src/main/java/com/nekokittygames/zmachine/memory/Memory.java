@@ -107,7 +107,8 @@ public class Memory {
                 else
                     return 4 * address + 8 * getRoutineOffset();
             case 8:
-                return 8 * address;
+                return 8 *
+                        address;
             default:
                 return address;
         }

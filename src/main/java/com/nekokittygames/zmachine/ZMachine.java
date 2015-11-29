@@ -1,14 +1,22 @@
 package com.nekokittygames.zmachine;
 
+import com.google.common.primitives.UnsignedBytes;
 import com.nekokittygames.zmachine.blorb.BlorbFile;
 import com.nekokittygames.zmachine.blorb.iff.chunks.RIdxChunk;
 import com.nekokittygames.zmachine.blorb.iff.chunks.ZCodChunk;
 import com.nekokittygames.zmachine.memory.Memory;
 import com.nekokittygames.zmachine.memory.ZCallStack;
 import com.nekokittygames.zmachine.memory.ZFrame;
+import com.nekokittygames.zmachine.misc.ZOP2;
+import com.nekokittygames.zmachine.misc.ZOpForm;
+import com.nekokittygames.zmachine.misc.ZOpType;
+import com.nekokittygames.zmachine.misc.ZOperType;
 import com.nekokittygames.zmachine.strings.ZStringManager;
 
 import java.io.*;
+import java.util.Arrays;
+
+import static com.google.common.primitives.UnsignedBytes.compare;
 
 /**
  * Created by Katrina on 16/02/2015.
@@ -104,6 +112,127 @@ public class ZMachine {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+
+
+    public void cycle() {
+        long PC = callStack.peek().getFrame().getPC();
+        long nextPC = 1;
+
+        byte nextInst = memory.getByte((int) PC);
+        byte opCode=0;
+        ZOpType type=null;
+
+        ZOpForm form=null;
+
+
+        byte bitForm = (byte) ((nextInst & 0xFF) >> 6);
+
+        switch (bitForm) {
+            case 0b11:
+                form = ZOpForm.VARIABLE;
+                break;
+            case 0b10:
+                form = ZOpForm.SHORT;
+                break;
+            default:
+                form = ZOpForm.LONG;
+        }
+        if (compare(nextInst, (byte) 0xBE)==0)
+            form = ZOpForm.EXTENDED;
+        ZOperType[] operTypes=new ZOperType[]{  ZOperType.OMMITED,ZOperType.OMMITED,ZOperType.OMMITED,ZOperType.OMMITED,
+                                                ZOperType.OMMITED,ZOperType.OMMITED,ZOperType.OMMITED,ZOperType.OMMITED};
+        long operands[] = new long[8];
+        switch(form)
+        {
+            case LONG:
+                type=ZOpType.OP2;
+                opCode= (byte) (nextInst&0x1F);
+                break;
+            case SHORT:
+                type= (nextInst&0x30) >> 4 == 11 ? ZOpType.OP0 : ZOpType.OP1;
+                opCode= (byte) (nextInst&0xF);
+                break;
+            case VARIABLE:
+                byte byt= (byte) ((nextInst&0x20) >> 5);
+                type=byt == 1 ? ZOpType.VAR:ZOpType.OP2;
+                opCode=(byte) (nextInst&0x20);
+                break;
+            case EXTENDED:
+                type=ZOpType.VAR;
+                opCode=memory.getByte((int) (PC+1));
+                nextPC++;
+                break;
+        }
+
+        switch(form)
+        {
+            case SHORT:
+                if(type==ZOpType.OP1)
+                {
+                    operTypes[0]=ZOperType.getType((byte) ((nextInst&0x30) >> 4));
+                }
+                break;
+            case LONG:
+                operTypes[0]=(nextInst&0x40) >> 6 ==0? ZOperType.SMALL_CONSTANT:ZOperType.VARIABLE;
+                operTypes[1]=(nextInst&0x20) >> 5 ==0? ZOperType.SMALL_CONSTANT:ZOperType.VARIABLE;
+                break;
+            case VARIABLE:
+            case EXTENDED:
+                byte types=memory.getByte((int) (PC+nextPC));
+                nextPC++;
+                int count=0;
+                operTypes[0]=ZOperType.getType ((byte) ((types&0xFF) >> 6));
+                operTypes[1]=ZOperType.getType ((byte) ((types&0xFF) >> 4));
+                operTypes[2]=ZOperType.getType ((byte) ((types&0xFF) >> 2));
+                operTypes[3]=ZOperType.getType ((byte) ((types&0xFF) ));
+
+                if(nextInst==236 || nextInst==250)
+                {
+                    byte types2=memory.getByte((int) (PC+nextPC));
+                    nextPC++;
+                    operTypes[4]=ZOperType.getType ((byte) ((types2&0xFF) >> 6));
+                    operTypes[5]=ZOperType.getType ((byte) ((types2&0xFF) >> 4));
+                    operTypes[6]=ZOperType.getType ((byte) ((types2&0xFF) >> 2));
+                    operTypes[7]=ZOperType.getType ((byte) ((types2&0xFF) ));
+                }
+                break;
+        }
+        System.out.println(Arrays.toString(operTypes));
+        for(int i=0;i<8;i++)
+        {
+            switch (operTypes[i])
+            {
+                case OMMITED:
+                    break;
+                case SMALL_CONSTANT:
+                case VARIABLE:
+                    operands[i]=memory.getByte((int) (PC+nextPC));
+                    nextPC+=1;
+                    break;
+                case LARGE_CONSTANT:
+                    operands[i]=memory.getWordu((int) (PC+nextPC));
+                    nextPC+=2;
+                    break;
+            }
+        }
+
+        System.out.println(opCode);
+        System.out.println(Arrays.toString(operands));
+        switch(type)
+        {
+            case OP2:
+            {
+                switch(opCode)
+                {
+                    case 0x1:
+                        System.out.print(ZOP2.values()[opCode]+" ");
+                        
+
+                }
+            }
         }
     }
 }

@@ -98,15 +98,9 @@ public class TestRun {
 
         ZMachine machine=new ZMachine();
         machine.InitFromFile(Resources.getResource("Galatea.zblorb").getFile());
-        System.out.println(machine.getCallStack().peek().getFrame().getPC());
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()))));
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+1))));
-        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+4)) ));
-        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+5))));
-        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+6)) ));
-        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+7))));
-        System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+8))));
-        System.out.println(machine.getMemory().getWordu((int) (machine.getCallStack().peek().getFrame().getPC()+9)));
+        machine.cycle();
 
 
 
