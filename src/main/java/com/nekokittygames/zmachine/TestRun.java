@@ -101,6 +101,11 @@ public class TestRun {
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()))));
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+1))));
         machine.cycle();
+        machine.cycle();
+        machine.cycle();
+        machine.cycle();
+        machine.cycle();
+
 
 
 

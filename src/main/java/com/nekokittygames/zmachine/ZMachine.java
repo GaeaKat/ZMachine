@@ -118,7 +118,8 @@ public class ZMachine {
 
 
     public void cycle() {
-        long PC = callStack.peek().getFrame().getPC();
+        ZFrame currentFrame=callStack.peek().getFrame();
+        long PC = currentFrame.getPC();
         long nextPC = 1;
 
         byte nextInst = memory.getByte((int) PC);
@@ -152,13 +153,13 @@ public class ZMachine {
                 opCode= (byte) (nextInst&0x1F);
                 break;
             case SHORT:
-                type= (nextInst&0x30) >> 4 == 11 ? ZOpType.OP0 : ZOpType.OP1;
+                type= (nextInst&0x18) >> 3 == 3 ? ZOpType.OP0 : ZOpType.OP1;
                 opCode= (byte) (nextInst&0xF);
                 break;
             case VARIABLE:
                 byte byt= (byte) ((nextInst&0x20) >> 5);
                 type=byt == 1 ? ZOpType.VAR:ZOpType.OP2;
-                opCode=(byte) (nextInst&0x20);
+                opCode=(byte) (nextInst&0x1F);
                 break;
             case EXTENDED:
                 type=ZOpType.VAR;
@@ -200,7 +201,6 @@ public class ZMachine {
                 }
                 break;
         }
-        System.out.println(Arrays.toString(operTypes));
         for(int i=0;i<8;i++)
         {
             switch (operTypes[i])
@@ -218,9 +218,6 @@ public class ZMachine {
                     break;
             }
         }
-
-        System.out.println(opCode);
-        System.out.println(Arrays.toString(operands));
         switch(type)
         {
             case OP2:
@@ -228,11 +225,82 @@ public class ZMachine {
                 switch(opCode)
                 {
                     case 0x1:
-                        System.out.print(ZOP2.values()[opCode]+" ");
-                        
+                        System.out.print(ZOP2.values()[opCode-1]+" ");
+                        System.out.print(operTypes[0] + " - "+operands[0] + ", ");
+                        System.out.print(operTypes[1] + " - "+operands[1]);
+
+                    case 0x2:
+                        System.out.print(ZOP2.values()[opCode-1]+" ");
+                        System.out.print(operTypes[0] + " - "+operands[0] + ", ");
+                        System.out.print(operTypes[1] + " - "+operands[1]);
 
                 }
             }
+            case VAR:
+            {
+                switch(opCode)
+                {
+                    case 0x0:
+                        System.out.print("CALL");
+                        if(memory.getVersion()>=4)
+                            System.out.print("_VS");
+                        System.out.print(" "+operTypes[0] + " - "+operands[0]+" -> ");
+                        byte retVal=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        if(UnsignedBytes.compare((byte)0,retVal)==0)
+                        System.out.println();
+                        else
+                        System.out.println(UnsignedBytes.toString(retVal));
+                        ZFrame frame=constructCall( memory.getPackedAddress((int) operands[0]),retVal);
+                        callStack.push(frame);
+                        break;
+                    case 0x19:
+                        System.out.print("CALL_VN");
+                        System.out.println(" "+operTypes[0] + " - "+operands[0]);
+                        ZFrame framec=constructCall( memory.getPackedAddress((int) operands[0]), (byte) 0);
+                        callStack.push(framec);
+
+
+                }
+            }
+            case OP0:
+            {
+                switch (opCode)
+                {
+                    case 0xA:
+                        System.out.println("QUIT");
+                }
+            }
         }
+
+        currentFrame.setPC(PC+nextPC);
+    }
+
+
+    public ZFrame constructCall(int address,byte retVal)
+    {
+        ZFrame frame=new ZFrame();
+        frame.setRetVal(retVal);
+        int currentAdd=address;
+        frame.setNumValues(memory.getByte(currentAdd));
+        currentAdd++;
+        if(memory.getVersion()<=4)
+        {
+            for(int i=0;i<frame.getNumValues();i++)
+            {
+                frame.getVariables()[i]= (short) memory.getWordu(currentAdd);
+                currentAdd+=2;
+            }
+        }
+        else
+        {
+            for(int i=0;i<frame.getNumValues();i++)
+            {
+                frame.getVariables()[i]= (short) 0;
+            }
+        }
+
+        frame.setPC(currentAdd);
+        return frame;
     }
 }

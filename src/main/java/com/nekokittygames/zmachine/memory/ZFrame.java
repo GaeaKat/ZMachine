@@ -21,6 +21,15 @@ public class ZFrame implements Cloneable, Serializable{
     private short[] variables=new short[15];
     private ProcedureCall call=ProcedureCall.NA;
     private int numValues;
+    private byte retVal;
+
+    public byte getRetVal() {
+        return retVal;
+    }
+
+    public void setRetVal(byte retVal) {
+        this.retVal = retVal;
+    }
 
     public long getPC() {
         return PC;
