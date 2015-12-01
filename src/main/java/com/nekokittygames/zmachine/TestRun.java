@@ -4,6 +4,8 @@ import com.google.common.io.Resources;
 import com.google.common.primitives.UnsignedBytes;
 import com.nekokittygames.zmachine.memory.ZCallStack;
 import com.nekokittygames.zmachine.memory.ZFrame;
+import com.nekokittygames.zmachine.memory.ZObject;
+import com.nekokittygames.zmachine.memory.ZObjectTree;
 
 import javax.sound.midi.SysexMessage;
 import java.io.*;
@@ -97,9 +99,13 @@ public class TestRun {
 //        System.out.println(stack.getSize());
 
         ZMachine machine=new ZMachine();
-        machine.InitFromFile(Resources.getResource("Galatea.zblorb").getFile());
+        machine.InitFromFile(Resources.getResource("Pelican.zblorb").getFile());
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()))));
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+1))));
+        ZObjectTree tree=new ZObjectTree(machine.getMemory());
+        ZObject one=tree.getObject(1);
+        ZObject two=tree.getObject(2);
+        ZObject five=tree.getObject(5);
         machine.cycle();
         machine.cycle();
         machine.cycle();
