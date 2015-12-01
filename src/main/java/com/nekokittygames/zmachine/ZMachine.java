@@ -14,7 +14,8 @@ import com.nekokittygames.zmachine.misc.ZOperType;
 import com.nekokittygames.zmachine.strings.ZStringManager;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.primitives.UnsignedBytes.compare;
 
@@ -222,17 +223,182 @@ public class ZMachine {
         {
             case OP2:
             {
+                System.out.print(ZOP2.values()[opCode-1]+" ");
+                System.out.print(operTypes[0] + " - "+operands[0] + ", ");
+                System.out.print(operTypes[1] + " - "+operands[1]);
                 switch(opCode)
                 {
                     case 0x1:
-                        System.out.print(ZOP2.values()[opCode-1]+" ");
-                        System.out.print(operTypes[0] + " - "+operands[0] + ", ");
-                        System.out.print(operTypes[1] + " - "+operands[1]);
 
+                        byte offset=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        boolean branchPositive=((offset&0xFF) >> 7)==1;
+                        boolean shortOffset=((offset&0x40) >> 6)==1;
+                        long offsetAmount=0;
+                        if(shortOffset)
+                        {
+                            offsetAmount=offset&0x3F;
+                        }
+                        else
+                        {
+                            byte second=memory.getByte((int) (PC+nextPC));
+                            nextPC++;
+                            short tmp= (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount=fromTwoComplement(tmp,14);
+
+                        }
+                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+
+                        if(getValue(operTypes,operands,0)==getValue(operTypes,operands,1))
+                        {
+                            if(branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        else
+                        {
+                            if(!branchPositive)
+                                nextPC=nextPC+offsetAmount-2;
+                        }
+                        break;
                     case 0x2:
-                        System.out.print(ZOP2.values()[opCode-1]+" ");
-                        System.out.print(operTypes[0] + " - "+operands[0] + ", ");
-                        System.out.print(operTypes[1] + " - "+operands[1]);
+                        offset=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        branchPositive=((offset&0xFF) >> 7)==1;
+                        shortOffset=((offset&0x40) >> 6)==1;
+                        offsetAmount=0;
+                        if(shortOffset)
+                        {
+                            offsetAmount=offset&0x3F;
+                        }
+                        else
+                        {
+                            byte second=memory.getByte((int) (PC+nextPC));
+                            nextPC++;
+                            short tmp= (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount=fromTwoComplement(tmp,14);
+
+                        }
+                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+                        if(getValue(operTypes,operands,0)<getValue(operTypes,operands,1))
+                        {
+                            if(branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        else
+                        {
+                            if(!branchPositive)
+                                nextPC=nextPC+offsetAmount-2;
+                        }
+                        break;
+                    case 0x3:
+                        offset=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        branchPositive=((offset&0xFF) >> 7)==1;
+                        shortOffset=((offset&0x40) >> 6)==1;
+                        offsetAmount=0;
+                        if(shortOffset)
+                        {
+                            offsetAmount=offset&0x3F;
+                        }
+                        else
+                        {
+                            byte second=memory.getByte((int) (PC+nextPC));
+                            nextPC++;
+                            short tmp= (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount=fromTwoComplement(tmp,14);
+
+                        }
+                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+                        if(getValue(operTypes,operands,0)>getValue(operTypes,operands,1))
+                        {
+                            if(branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        else
+                        {
+                            if(!branchPositive)
+                                nextPC=nextPC+offsetAmount-2;
+                        }
+                        break;
+                    case 0x4:
+                        offset=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        branchPositive=((offset&0xFF) >> 7)==1;
+                        shortOffset=((offset&0x40) >> 6)==1;
+                        offsetAmount=0;
+                        if(shortOffset)
+                        {
+                            offsetAmount=offset&0x3F;
+                        }
+                        else
+                        {
+                            byte second=memory.getByte((int) (PC+nextPC));
+                            nextPC++;
+                            short tmp= (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount=fromTwoComplement(tmp,14);
+
+                        }
+                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0])-1));
+                        if(getVariable((byte) operands[1]) < getValue(operTypes,operands,1))
+                        {
+                            if(branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        else
+                        {
+                            if(!branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        break;
+                    case 0x5:
+                        offset=memory.getByte((int) (PC+nextPC));
+                        nextPC++;
+                        branchPositive=((offset&0xFF) >> 7)==1;
+                        shortOffset=((offset&0x40) >> 6)==1;
+                        offsetAmount=0;
+                        if(shortOffset)
+                        {
+                            offsetAmount=offset&0x3F;
+                        }
+                        else
+                        {
+                            byte second=memory.getByte((int) (PC+nextPC));
+                            nextPC++;
+                            short tmp= (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount=fromTwoComplement(tmp,14);
+
+                        }
+                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0])+1));
+                        if(getVariable((byte) operands[1]) > getValue(operTypes,operands,1))
+                        {
+                            if(branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        else
+                        {
+                            if(!branchPositive)
+                            {
+                                nextPC=nextPC+offsetAmount-2;
+                            }
+                        }
+                        break;
+                    case 0x6:
+                        
+                        break;
 
                 }
             }
@@ -251,13 +417,38 @@ public class ZMachine {
                         System.out.println();
                         else
                         System.out.println(UnsignedBytes.toString(retVal));
-                        ZFrame frame=constructCall( memory.getPackedAddress((int) operands[0]),retVal);
+                        int cnt=1;
+                        ZOperType typ=operTypes[cnt];
+                        List<Short> args=new ArrayList<Short>();
+
+                        while(typ!=ZOperType.OMMITED)
+                        {
+                            if(typ==ZOperType.VARIABLE)
+                                args.add(getVariable((byte) operands[cnt]));
+                            else
+                                args.add((short) operands[cnt]);
+                            cnt++;
+                        }
+                        ZFrame frame=constructCall( memory.getPackedAddress((int) operands[0]),retVal,args.toArray());
                         callStack.push(frame);
                         break;
                     case 0x19:
                         System.out.print("CALL_VN");
                         System.out.println(" "+operTypes[0] + " - "+operands[0]);
-                        ZFrame framec=constructCall( memory.getPackedAddress((int) operands[0]), (byte) 0);
+                        cnt=1;
+                        typ=operTypes[cnt];
+                        args=new ArrayList<Short>();
+
+                        while(typ!=ZOperType.OMMITED)
+                        {
+                            if(typ==ZOperType.VARIABLE)
+                                args.add(getVariable((byte) operands[cnt]));
+                            else
+                                args.add((short) operands[cnt]);
+                            cnt++;
+                            typ=operTypes[cnt];
+                        }
+                        ZFrame framec=constructCall( memory.getPackedAddress((int) operands[0]), (byte) 0,args.toArray());
                         callStack.push(framec);
 
 
@@ -276,8 +467,22 @@ public class ZMachine {
         currentFrame.setPC(PC+nextPC);
     }
 
+    private long getValue(ZOperType[] operTypes, long[] operands, int count) {
+        if(operTypes[count]!=ZOperType.VARIABLE)
+            return operands[count];
+        else
+            return getVariable((byte) operands[count]);
+    }
+    public static int fromTwoComplement(int value, int bitSize) {
+        int shift = Integer.SIZE - bitSize;
+        // shift sign into position
+        int result  = value << shift;
+        // Java right shift uses sign extension, but only works on integers or longs
+        result = result >> shift;
+        return result;
+    }
 
-    public ZFrame constructCall(int address,byte retVal)
+    public ZFrame constructCall(int address, byte retVal, Object[] arguments)
     {
         ZFrame frame=new ZFrame();
         frame.setRetVal(retVal);
@@ -299,8 +504,35 @@ public class ZMachine {
                 frame.getVariables()[i]= (short) 0;
             }
         }
+        int cnt=0;
+        if(arguments.length!=0) {
+            for (Object arg : arguments) {
+                frame.getVariables()[cnt++] = (Short)arg;
+            }
+        }
 
         frame.setPC(currentAdd);
         return frame;
+    }
+    public short getVariable(byte var)
+    {
+        if(var>0 && var<0x10)
+        {
+            return callStack.peek().getFrame().getVariables()[var-1];
+        }
+        if(var==0)
+        {
+            return callStack.peek().getFrame().getRoutineStack().pop();
+        }
+        return (short) memory.getWordu(memory.getGlobalVariables()+var-0x10);
+    }
+
+    public void setVariable(byte var,short value) {
+        if (var > 0 && var < 0x10) {
+            callStack.peek().getFrame().getVariables()[var - 1] = value;
+        } else if (var == 0)
+            callStack.peek().getFrame().getRoutineStack().push(value);
+        else
+            memory.setWordb(memory.getGlobalVariables() + var - 0x10, value);
     }
 }
