@@ -70,9 +70,8 @@ public class ZObjectTree {
         byte nameSize=memory.getByte(properties);
         current=properties+1;
         tmp.setName(ZStringManager.Decode(current));
-        current+=nameSize;
+        current+=nameSize*2;
         tmp.setProperties(new byte[memory.getVersion() < 4?31:63][]);
-
         int cnt=0;
         byte byt=memory.getByte(current++);
         while(byt!=0)
@@ -82,7 +81,7 @@ public class ZObjectTree {
             if(memory.getVersion()>3)
             {
                 byte two=-1;
-                byte tmpb= (byte) (byt>>6);
+                byte tmpb= (byte) (byt>>7);
                 if(tmpb ==1 )
                 {
                     two=memory.getByte(current++);
