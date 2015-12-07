@@ -72,7 +72,37 @@ public class ZObjectTree {
         tmp.setName(ZStringManager.Decode(current));
         current+=nameSize;
         tmp.setProperties(new byte[memory.getVersion() < 4?31:63][]);
-        
+
+        int cnt=0;
+        byte byt=memory.getByte(current++);
+        while(byt!=0)
+        {
+            int amt=byt;
+            int pos=(memory.getVersion() < 4?31:63)-cnt++;
+            if(memory.getVersion()>3)
+            {
+                byte two=-1;
+                byte tmpb= (byte) (byt>>6);
+                if(tmpb ==1 )
+                {
+                    two=memory.getByte(current++);
+                    amt=two&0x3F;
+                    if(amt==0)
+                        amt=64;
+                    pos=byt&0x3F;
+                }
+                else
+                {
+                    pos=byt&0x3F;
+                    amt=((byt&0x40 )>> 6)==1?2:1;
+                }
+            }
+            byte[] array=new byte[amt];
+            for(int bytNum=0;bytNum<amt;bytNum++)
+                array[bytNum]=memory.getByte(current++);
+            tmp.getProperties()[pos]=array;
+            byt=memory.getByte(current++);
+        }
         return tmp;
     }
     public short[] defaultProperties;

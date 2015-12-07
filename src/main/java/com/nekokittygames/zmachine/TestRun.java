@@ -103,9 +103,10 @@ public class TestRun {
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()))));
         System.out.println(UnsignedBytes.toString(machine.getMemory().getByte((int) (machine.getCallStack().peek().getFrame().getPC()+1))));
         ZObjectTree tree=new ZObjectTree(machine.getMemory());
-        ZObject one=tree.getObject(1);
-        ZObject two=tree.getObject(2);
-        ZObject five=tree.getObject(5);
+        //ZObject one=tree.getObject(1);
+        //ZObject two=tree.getObject(2);
+        //ZObject five=tree.getObject(5);
+        ZObject twentynine=tree.getObject(17);
         machine.cycle();
         machine.cycle();
         machine.cycle();
