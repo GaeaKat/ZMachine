@@ -81,8 +81,9 @@ public class ZObjectTree {
             if(memory.getVersion()>3)
             {
                 byte two=-1;
-                byte tmpb= (byte) (byt>>7);
-                if(tmpb ==1 )
+                byte tmpa= (byte) (byt&0xFF);
+                byte tmpb= (byte) (tmpa >> 7);
+                if(tmpb !=0 )
                 {
                     two=memory.getByte(current++);
                     amt=two&0x3F;

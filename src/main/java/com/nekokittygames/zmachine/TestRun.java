@@ -106,7 +106,7 @@ public class TestRun {
         //ZObject one=tree.getObject(1);
         //ZObject two=tree.getObject(2);
         //ZObject five=tree.getObject(5);
-        ZObject twentynine=tree.getObject(17);
+        ZObject twentynine=tree.getObject(29  );
         machine.cycle();
         machine.cycle();
         machine.cycle();
