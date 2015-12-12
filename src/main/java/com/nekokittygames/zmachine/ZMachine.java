@@ -4,9 +4,7 @@ import com.google.common.primitives.UnsignedBytes;
 import com.nekokittygames.zmachine.blorb.BlorbFile;
 import com.nekokittygames.zmachine.blorb.iff.chunks.RIdxChunk;
 import com.nekokittygames.zmachine.blorb.iff.chunks.ZCodChunk;
-import com.nekokittygames.zmachine.memory.Memory;
-import com.nekokittygames.zmachine.memory.ZCallStack;
-import com.nekokittygames.zmachine.memory.ZFrame;
+import com.nekokittygames.zmachine.memory.*;
 import com.nekokittygames.zmachine.misc.ZOP2;
 import com.nekokittygames.zmachine.misc.ZOpForm;
 import com.nekokittygames.zmachine.misc.ZOpType;
@@ -25,6 +23,7 @@ import static com.google.common.primitives.UnsignedBytes.compare;
 public class ZMachine {
     private Memory memory;
     private ZCallStack callStack;
+    private ZObjectTree tree;
     private String fileName;
     public Memory getMemory()
     {
@@ -74,6 +73,11 @@ public class ZMachine {
             callStack.peek().getFrame().setPC(memory.getPackedAddress(memory.getInitialPacked())+1);
             callStack.peek().getFrame().setNumValues(memory.getByte(memory.getPackedAddress(memory.getInitialPacked())));
         }
+        tree=new ZObjectTree(memory);
+    }
+
+    public ZObjectTree getTree() {
+        return tree;
     }
 
     public void save_machine(String file)
@@ -226,178 +230,302 @@ public class ZMachine {
                 System.out.print(ZOP2.values()[opCode-1]+" ");
                 System.out.print(operTypes[0] + " - "+operands[0] + ", ");
                 System.out.print(operTypes[1] + " - "+operands[1]);
-                switch(opCode)
-                {
+                switch(opCode) {
                     case 0x1:
 
-                        byte offset=memory.getByte((int) (PC+nextPC));
+                        byte offset = memory.getByte((int) (PC + nextPC));
                         nextPC++;
-                        boolean branchPositive=((offset&0xFF) >> 7)==1;
-                        boolean shortOffset=((offset&0x40) >> 6)==1;
-                        long offsetAmount=0;
-                        if(shortOffset)
-                        {
-                            offsetAmount=offset&0x3F;
-                        }
-                        else
-                        {
-                            byte second=memory.getByte((int) (PC+nextPC));
+                        boolean branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        boolean shortOffset = ((offset & 0x40) >> 6) == 1;
+                        long offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
                             nextPC++;
-                            short tmp= (short) (((offset & 0x3F) << 8) | second);
-                            offsetAmount=fromTwoComplement(tmp,14);
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
 
                         }
-                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
 
-                        if(getValue(operTypes,operands,0)==getValue(operTypes,operands,1))
-                        {
-                            if(branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        if (getValue(operTypes, operands, 0) == getValue(operTypes, operands, 1)) {
+                            if (branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
-                        }
-                        else
-                        {
-                            if(!branchPositive)
-                                nextPC=nextPC+offsetAmount-2;
+                        } else {
+                            if (!branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
                         }
                         break;
                     case 0x2:
-                        offset=memory.getByte((int) (PC+nextPC));
+                        offset = memory.getByte((int) (PC + nextPC));
                         nextPC++;
-                        branchPositive=((offset&0xFF) >> 7)==1;
-                        shortOffset=((offset&0x40) >> 6)==1;
-                        offsetAmount=0;
-                        if(shortOffset)
-                        {
-                            offsetAmount=offset&0x3F;
-                        }
-                        else
-                        {
-                            byte second=memory.getByte((int) (PC+nextPC));
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
                             nextPC++;
-                            short tmp= (short) (((offset & 0x3F) << 8) | second);
-                            offsetAmount=fromTwoComplement(tmp,14);
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
 
                         }
-                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
-                        if(getValue(operTypes,operands,0)<getValue(operTypes,operands,1))
-                        {
-                            if(branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        if (getValue(operTypes, operands, 0) < getValue(operTypes, operands, 1)) {
+                            if (branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
-                        }
-                        else
-                        {
-                            if(!branchPositive)
-                                nextPC=nextPC+offsetAmount-2;
+                        } else {
+                            if (!branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
                         }
                         break;
                     case 0x3:
-                        offset=memory.getByte((int) (PC+nextPC));
+                        offset = memory.getByte((int) (PC + nextPC));
                         nextPC++;
-                        branchPositive=((offset&0xFF) >> 7)==1;
-                        shortOffset=((offset&0x40) >> 6)==1;
-                        offsetAmount=0;
-                        if(shortOffset)
-                        {
-                            offsetAmount=offset&0x3F;
-                        }
-                        else
-                        {
-                            byte second=memory.getByte((int) (PC+nextPC));
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
                             nextPC++;
-                            short tmp= (short) (((offset & 0x3F) << 8) | second);
-                            offsetAmount=fromTwoComplement(tmp,14);
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
 
                         }
-                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
-                        if(getValue(operTypes,operands,0)>getValue(operTypes,operands,1))
-                        {
-                            if(branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        if (getValue(operTypes, operands, 0) > getValue(operTypes, operands, 1)) {
+                            if (branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
-                        }
-                        else
-                        {
-                            if(!branchPositive)
-                                nextPC=nextPC+offsetAmount-2;
+                        } else {
+                            if (!branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
                         }
                         break;
                     case 0x4:
-                        offset=memory.getByte((int) (PC+nextPC));
+                        offset = memory.getByte((int) (PC + nextPC));
                         nextPC++;
-                        branchPositive=((offset&0xFF) >> 7)==1;
-                        shortOffset=((offset&0x40) >> 6)==1;
-                        offsetAmount=0;
-                        if(shortOffset)
-                        {
-                            offsetAmount=offset&0x3F;
-                        }
-                        else
-                        {
-                            byte second=memory.getByte((int) (PC+nextPC));
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
                             nextPC++;
-                            short tmp= (short) (((offset & 0x3F) << 8) | second);
-                            offsetAmount=fromTwoComplement(tmp,14);
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
 
                         }
-                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
-                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0])-1));
-                        if(getVariable((byte) operands[1]) < getValue(operTypes,operands,1))
-                        {
-                            if(branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0]) - 1));
+                        if (getVariable((byte) operands[1]) < getValue(operTypes, operands, 1)) {
+                            if (branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
-                        }
-                        else
-                        {
-                            if(!branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        } else {
+                            if (!branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
                         }
                         break;
                     case 0x5:
-                        offset=memory.getByte((int) (PC+nextPC));
+                        offset = memory.getByte((int) (PC + nextPC));
                         nextPC++;
-                        branchPositive=((offset&0xFF) >> 7)==1;
-                        shortOffset=((offset&0x40) >> 6)==1;
-                        offsetAmount=0;
-                        if(shortOffset)
-                        {
-                            offsetAmount=offset&0x3F;
-                        }
-                        else
-                        {
-                            byte second=memory.getByte((int) (PC+nextPC));
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
                             nextPC++;
-                            short tmp= (short) (((offset & 0x3F) << 8) | second);
-                            offsetAmount=fromTwoComplement(tmp,14);
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
 
                         }
-                        System.out.println((branchPositive?" [TRUE] ": "[FALSE] ")+" - "+offsetAmount);
-                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0])+1));
-                        if(getVariable((byte) operands[1]) > getValue(operTypes,operands,1))
-                        {
-                            if(branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        setVariable((byte) operands[0], (short) (getVariable((byte) operands[0]) + 1));
+                        if (getVariable((byte) operands[1]) > getValue(operTypes, operands, 1)) {
+                            if (branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
-                        }
-                        else
-                        {
-                            if(!branchPositive)
-                            {
-                                nextPC=nextPC+offsetAmount-2;
+                        } else {
+                            if (!branchPositive) {
+                                nextPC = nextPC + offsetAmount - 2;
                             }
                         }
                         break;
                     case 0x6:
-                        
+                        offset = memory.getByte((int) (PC + nextPC));
+                        nextPC++;
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
+                            nextPC++;
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
+
+                        }
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        if (tree.getObject((int) operands[1]).getParent() == operands[0]) {
+                            if (branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
+                        } else if (!branchPositive)
+                            nextPC = nextPC + offsetAmount - 2;
+
+                        break;
+                    case 0x7:
+                        offset = memory.getByte((int) (PC + nextPC));
+                        nextPC++;
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
+                            nextPC++;
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
+
+                        }
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        if ((operands[0] & operands[1]) == operands[1]) {
+                            if (branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
+                        } else if (!branchPositive)
+                            nextPC = nextPC + offsetAmount - 2;
+
+
+                        break;
+                    case 0x8:
+                        byte variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0] | operands[1]));
+                        break;
+                    case 0x9:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0] & operands[1]));
+                        break;
+                    case 0xA:
+                        offset = memory.getByte((int) (PC + nextPC));
+                        nextPC++;
+                        branchPositive = ((offset & 0xFF) >> 7) == 1;
+                        shortOffset = ((offset & 0x40) >> 6) == 1;
+                        offsetAmount = 0;
+                        if (shortOffset) {
+                            offsetAmount = offset & 0x3F;
+                        } else {
+                            byte second = memory.getByte((int) (PC + nextPC));
+                            nextPC++;
+                            short tmp = (short) (((offset & 0x3F) << 8) | second);
+                            offsetAmount = fromTwoComplement(tmp, 14);
+
+                        }
+                        System.out.println((branchPositive ? " [TRUE] " : "[FALSE] ") + " - " + offsetAmount);
+                        ZObject obj=tree.getObject((int) operands[0]);
+                        if(obj.getAttributes().get((int)operands[1]))
+                        {
+                            if(branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
+                        }
+                        else
+                            if(!branchPositive)
+                                nextPC = nextPC + offsetAmount - 2;
+                        break;
+                    case 0xB:
+                        obj=tree.getObject((int) operands[0]);
+                        obj.getAttributes().set((int)operands[1]);
+                        tree.setObject((int) operands[0],obj);
+                        break;
+                    case 0xC:
+                        obj=tree.getObject((int) operands[0]);
+                        obj.getAttributes().clear((int)operands[1]);
+                        tree.setObject((int) operands[0],obj);
+                        break;
+                    case 0xD:
+                        setVariable((byte)operands[0],(short)operands[1]);
+                        break;
+                    case 0xE:
+                        ZObject obj1=tree.getObject((int) operands[0]);
+                        ZObject obj2=tree.getObject((int) operands[1]);
+                        obj1.setParent((int) operands[1]);
+                        obj1.setSibling(obj2.getChild());
+                        obj2.setChild((int) operands[0]);
+                        tree.setObject((int) operands[0],obj1);
+                        tree.setObject((int) operands[1],obj2);
+                        break;
+                    case 0xF:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) memory.getWordu((int) (operands[0]+(2*operands[1]))));
+                        break;
+                    case 0x10:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) memory.getByte((int)(operands[0]+(2*operands[1]))));
+                        break;
+                    case 0x11:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable,tree.getProperty((int)operands[0],(int)operands[1]));
+                        break;
+                    case 0x12:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable,tree.getPropertyAddress((int)operands[0],(int)operands[1]));
+                        break;
+                    case 0x13:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable,tree.getNextProperty((int)operands[0],(int)operands[1]));
+                        break;
+                    case 0x14:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0]+operands[1]));
+                        break;
+                    case 0x15:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0]-operands[1]));
+                        break;
+                    case 0x16:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0]*operands[1]));
+                        break;
+                    case 0x17:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0]/operands[1]));
+                        break;
+                    case 0x18:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        setVariable(variable, (short) (operands[0]%operands[1]));
+                        break;
+                    case 0x19:
+                        variable=memory.getByte((int)(PC+nextPC));
+                        nextPC++;
+                        ZFrame frame=constructCall( memory.getPackedAddress((int) operands[0]),variable,new Object[]{operands[1]});
+                        callStack.push(frame);
+                        break;
+                    case 0x1A:
+                        frame=constructCall( memory.getPackedAddress((int) operands[0]), (byte) 0,new Object[]{operands[1]});
+                        callStack.push(frame);
                         break;
 
                 }

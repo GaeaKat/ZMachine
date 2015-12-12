@@ -68,4 +68,12 @@ public class ObjectTests {
         assertArrayEquals("Property 52 is two byte simple",arr52,testObj.getProperty(52));
         assertArrayEquals("Property 1 is long complicated",ar1,testObj.getProperty(1));
     }
+
+    @Test
+    public void Attributes()
+    {
+        assertEquals("Attribute 16 must be set",true,testObj.getAttributes().get(16));
+        assertEquals("Attribute 17 must not be set",false,testObj.getAttributes().get(17));
+        assertEquals("Attribute 23 must be set",true,testObj.getAttributes().get(23));
+    }
 }

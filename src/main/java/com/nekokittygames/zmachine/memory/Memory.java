@@ -142,6 +142,11 @@ public class Memory {
         memory[pos + 1] = num[1];
     }
 
+    public void setByte(int pos,byte byt)
+    {
+        memory[pos]=byt;
+    }
+
     public boolean getStatusType() {
         return isBitSet(memory[1], 1);
     }

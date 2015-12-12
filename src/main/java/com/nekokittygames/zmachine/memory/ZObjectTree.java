@@ -3,10 +3,8 @@ package com.nekokittygames.zmachine.memory;
 import com.nekokittygames.zmachine.strings.ZString;
 import com.nekokittygames.zmachine.strings.ZStringManager;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.*;
 
 /**
  * Created by katsw on 01/12/2015.
@@ -36,6 +34,33 @@ public class ZObjectTree {
 
     }
 
+    public void setObject(int pos,ZObject obj) {
+        int current=(memory.getVersion() <4? 31*2:63*2)+(memory.getVersion() <4?9:14)*(pos-1);
+        byte[] attributes=obj.getAttributes().toByteArray();
+        byte[] attributeBytes=new byte[memory.getVersion() <4 ? 4:6];
+        System.arraycopy(attributes,0,attributeBytes,0,attributes.length);
+        for(int i=0;i<attributeBytes.length;i++)
+        {
+            memory.setByte(memory.getObjects()+current++,attributeBytes[i]);
+        }
+
+        if(memory.getVersion()>=4) {
+            memory.setWordb(memory.getObjects()+current,(short)obj.getParent());
+            current+=2;
+            memory.setWordb(memory.getObjects()+current,(short)obj.getSibling());
+            current+=2;
+            memory.setWordb(memory.getObjects()+current,(short)obj.getChild());
+            current+=2;
+        }
+        else
+        {
+            memory.setByte(memory.getObjects()+current++,(byte)obj.getParent());
+            memory.setByte(memory.getObjects()+current++,(byte)obj.getSibling());
+            memory.setByte(memory.getObjects()+current++,(byte)obj.getChild());
+        }
+
+    }
+
     public ZObject getObject(int i)
     {
         int current=(memory.getVersion() <4? 31*2:63*2)+(memory.getVersion() <4?9:14)*(i-1);
@@ -48,7 +73,7 @@ public class ZObjectTree {
             current++;
 
         }
-        tmp.setAttributes(attributes);
+        tmp.setAttributes(BitSet.valueOf(attributes));
         num=memory.getVersion()<4?3:6;
         //byte[] assocs=new byte[num];
         //for(int byt=0;byt<num;byt++)
@@ -66,14 +91,21 @@ public class ZObjectTree {
             tmp.setChild(memory.getWordb(memory.getObjects()+current));
             current+=2;
         }
+        else
+        {
+            tmp.setParent(memory.getByte(memory.getObjects()+current++));
+            tmp.setSibling(memory.getByte(memory.getObjects()+current++));
+            tmp.setChild(memory.getByte(memory.getObjects()+current++));
+        }
         int properties=memory.getWordu(memory.getObjects()+current);
         byte nameSize=memory.getByte(properties);
         current=properties+1;
         tmp.setName(ZStringManager.Decode(current));
         current+=nameSize*2;
-        tmp.setProperties(new byte[memory.getVersion() < 4?31:63][]);
+        tmp.setProperties(new ZProperty[memory.getVersion() < 4?31:63]);
         int cnt=0;
         byte byt=memory.getByte(current++);
+        int startPos=current;
         while(byt!=0)
         {
             int amt=byt;
@@ -100,10 +132,39 @@ public class ZObjectTree {
             byte[] array=new byte[amt];
             for(int bytNum=0;bytNum<amt;bytNum++)
                 array[bytNum]=memory.getByte(current++);
-            tmp.getProperties()[pos]=array;
+            tmp.getProperties()[pos]=new ZProperty(array,startPos);
             byt=memory.getByte(current++);
         }
         return tmp;
     }
     public short[] defaultProperties;
+
+    public short getProperty(int i,int prop)
+    {
+        ZObject obj=getObject(i);
+        ZProperty tmp=obj.getProperty(prop);
+        if(tmp==null)
+            return defaultProperties[prop];
+        ByteBuffer buff=ByteBuffer.wrap(tmp.getBytes());
+        return buff.getShort();
+    }
+    public short getPropertyAddress(int i,int prop)
+    {
+        ZObject obj=getObject(i);
+        ZProperty tmp=obj.getProperty(prop);
+        if(tmp==null)
+            return 0;
+        return (short) tmp.getAddress();
+    }
+
+    public short getNextProperty(int i,int prop)
+    {
+        ZObject obj=getObject(i);
+        for(int j=prop;j<obj.getProperties().length;j++)
+        {
+            if(obj.getProperty(j)!=null)
+                return (short) j;
+        }
+        return 0;
+    }
 }

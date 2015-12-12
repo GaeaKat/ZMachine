@@ -1,5 +1,6 @@
 package com.nekokittygames.zmachine.memory;
 
+import java.util.BitSet;
 import java.util.Map;
 
 /**
@@ -10,9 +11,9 @@ public class ZObject {
     private int parent;
     private int sibling;
     private int child;
-    private byte[] attributes;
+    private BitSet attributes;
     private String name;
-    private byte[][] properties;
+    private ZProperty[] properties;
 
     public int getParent() {
         return parent;
@@ -38,11 +39,11 @@ public class ZObject {
         this.child = child;
     }
 
-    public byte[] getAttributes() {
+    public BitSet getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(byte[] attributes) {
+    public void setAttributes(BitSet attributes) {
         this.attributes = attributes;
     }
 
@@ -54,19 +55,19 @@ public class ZObject {
         this.name = name;
     }
 
-    public byte[][] getProperties() {
+    public ZProperty[] getProperties() {
         return properties;
     }
 
-    public void setProperties(byte[][] properties) {
+    public void setProperties(ZProperty[] properties) {
         this.properties = properties;
     }
-    public void setProperty(int i,byte[] property)
+    public void setProperty(int i,ZProperty property)
     {
         this.properties[i]=property;
     }
 
-    public byte[] getProperty(int i)
+    public ZProperty getProperty(int i)
     {
         return this.properties[i];
     }
